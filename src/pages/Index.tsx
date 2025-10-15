@@ -9,10 +9,18 @@ const Index = () => {
     return saved ? parseInt(saved, 10) : 0;
   });
   const [activeTab, setActiveTab] = useState('home');
+  const [unlockedCookies, setUnlockedCookies] = useState<number[]>(() => {
+    const saved = localStorage.getItem('unlockedCookies');
+    return saved ? JSON.parse(saved) : [];
+  });
 
   useEffect(() => {
     localStorage.setItem('cookieScore', score.toString());
   }, [score]);
+
+  useEffect(() => {
+    localStorage.setItem('unlockedCookies', JSON.stringify(unlockedCookies));
+  }, [unlockedCookies]);
 
   const cookies = [
     { id: 1, name: 'Brave Cookie', rarity: 5, type: 'Воин', power: '🗡️', color: 'from-pink-400 to-purple-500' },
@@ -39,6 +47,15 @@ const Index = () => {
   const handleCookieClick = () => {
     setScore(score + 10);
   };
+
+  const unlockCookie = (cookieId: number) => {
+    if (score >= 1000 && !unlockedCookies.includes(cookieId)) {
+      setScore(score - 1000);
+      setUnlockedCookies([...unlockedCookies, cookieId]);
+    }
+  };
+
+  const isCookieUnlocked = (cookieId: number) => unlockedCookies.includes(cookieId);
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-pink-300 via-purple-300 to-blue-300">
@@ -134,29 +151,66 @@ const Index = () => {
               👑 Легендарные печеньки
             </h2>
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-              {cookies.map((cookie) => (
-                <Card key={cookie.id} className="overflow-hidden border-4 border-yellow-400 rounded-3xl hover:scale-105 transition-transform bg-gradient-to-br from-yellow-100 to-orange-100">
-                  <div className={`h-32 bg-gradient-to-r ${cookie.color} flex items-center justify-center`}>
-                    <span className="text-7xl">{cookie.power}</span>
-                  </div>
-                  <div className="p-6">
-                    <div className="flex justify-between items-start mb-3">
-                      <h3 className="text-2xl font-bold text-purple-800" style={{ fontFamily: 'Fredoka, cursive' }}>
-                        {cookie.name}
-                      </h3>
-                      <Badge className="bg-gradient-to-r from-pink-500 to-purple-600 text-white font-bold">
-                        {'⭐'.repeat(cookie.rarity)}
-                      </Badge>
+              {cookies.map((cookie) => {
+                const isUnlocked = isCookieUnlocked(cookie.id);
+                return (
+                  <Card key={cookie.id} className="overflow-hidden border-4 border-yellow-400 rounded-3xl hover:scale-105 transition-transform bg-gradient-to-br from-yellow-100 to-orange-100">
+                    <div className={`h-32 bg-gradient-to-r ${cookie.color} flex items-center justify-center relative`}>
+                      {isUnlocked ? (
+                        <span className="text-7xl">{cookie.power}</span>
+                      ) : (
+                        <>
+                          <div className="absolute inset-0 bg-black/60 backdrop-blur-sm flex items-center justify-center">
+                            <span className="text-7xl">🔒</span>
+                          </div>
+                        </>
+                      )}
                     </div>
-                    <p className="text-gray-700 mb-4 font-semibold" style={{ fontFamily: 'Nunito, sans-serif' }}>
-                      Тип: {cookie.type}
-                    </p>
-                    <Button className="w-full rounded-full font-bold bg-gradient-to-r from-pink-500 to-purple-600 text-white hover:scale-105 transition-transform" style={{ fontFamily: 'Fredoka, cursive' }}>
-                      Играть
-                    </Button>
-                  </div>
-                </Card>
-              ))}
+                    <div className="p-6">
+                      {isUnlocked ? (
+                        <>
+                          <div className="flex justify-between items-start mb-3">
+                            <h3 className="text-2xl font-bold text-purple-800" style={{ fontFamily: 'Fredoka, cursive' }}>
+                              {cookie.name}
+                            </h3>
+                            <Badge className="bg-gradient-to-r from-pink-500 to-purple-600 text-white font-bold">
+                              {'⭐'.repeat(cookie.rarity)}
+                            </Badge>
+                          </div>
+                          <p className="text-gray-700 mb-4 font-semibold" style={{ fontFamily: 'Nunito, sans-serif' }}>
+                            Тип: {cookie.type}
+                          </p>
+                          <Button className="w-full rounded-full font-bold bg-gradient-to-r from-pink-500 to-purple-600 text-white hover:scale-105 transition-transform" style={{ fontFamily: 'Fredoka, cursive' }}>
+                            Играть
+                          </Button>
+                        </>
+                      ) : (
+                        <>
+                          <div className="flex justify-between items-start mb-3">
+                            <h3 className="text-2xl font-bold text-gray-500" style={{ fontFamily: 'Fredoka, cursive' }}>
+                              ???
+                            </h3>
+                            <Badge className="bg-gray-400 text-white font-bold">
+                              {'⭐'.repeat(cookie.rarity)}
+                            </Badge>
+                          </div>
+                          <p className="text-gray-500 mb-4 font-semibold" style={{ fontFamily: 'Nunito, sans-serif' }}>
+                            Заблокировано
+                          </p>
+                          <Button 
+                            onClick={() => unlockCookie(cookie.id)}
+                            disabled={score < 1000}
+                            className="w-full rounded-full font-bold bg-gradient-to-r from-yellow-500 to-orange-500 text-white hover:scale-105 transition-transform disabled:opacity-50 disabled:cursor-not-allowed" 
+                            style={{ fontFamily: 'Fredoka, cursive' }}
+                          >
+                            Открыть за 1000 🍪
+                          </Button>
+                        </>
+                      )}
+                    </div>
+                  </Card>
+                );
+              })}
             </div>
           </div>
         )}
