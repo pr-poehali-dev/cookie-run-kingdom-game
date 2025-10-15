@@ -1,11 +1,18 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { Button } from '@/components/ui/button';
 import { Card } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 
 const Index = () => {
-  const [score, setScore] = useState(0);
+  const [score, setScore] = useState(() => {
+    const saved = localStorage.getItem('cookieScore');
+    return saved ? parseInt(saved, 10) : 0;
+  });
   const [activeTab, setActiveTab] = useState('home');
+
+  useEffect(() => {
+    localStorage.setItem('cookieScore', score.toString());
+  }, [score]);
 
   const cookies = [
     { id: 1, name: 'Brave Cookie', rarity: 5, type: 'Воин', power: '🗡️', color: 'from-pink-400 to-purple-500' },
