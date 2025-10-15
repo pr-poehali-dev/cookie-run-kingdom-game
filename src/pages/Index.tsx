@@ -442,12 +442,12 @@ const Index = () => {
 
                   <button
                     onClick={attackBoss}
-                    className="mx-auto block hover:scale-110 active:scale-95 transition-transform cursor-pointer rounded-3xl overflow-hidden border-4 border-gray-900 shadow-2xl"
+                    className="mx-auto block hover:scale-110 active:scale-95 transition-transform cursor-pointer"
                   >
                     <img 
-                      src="https://cdn.poehali.dev/projects/6f41ee32-5d96-4d16-860f-c59fdeb86d77/files/a479b80e-fad8-4363-bd63-16075e851d47.jpg" 
+                      src="https://cdn.poehali.dev/files/655305c6-b74d-4bc4-a84f-9bfa11e979ce.jpg" 
                       alt="Silent Salt Cookie"
-                      className="w-64 h-64 object-cover"
+                      className="w-80 h-80 object-contain drop-shadow-2xl"
                     />
                   </button>
 
