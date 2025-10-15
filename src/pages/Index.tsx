@@ -144,6 +144,15 @@ const Index = () => {
 
         {activeTab === 'characters' && (
           <div className="space-y-8 animate-fade-in">
+            <div className="flex justify-center mb-4">
+              <Button
+                onClick={() => setActiveTab('home')}
+                className="rounded-full font-bold bg-gradient-to-r from-purple-500 to-pink-500 text-white hover:scale-105 transition-transform px-6 py-3"
+                style={{ fontFamily: 'Fredoka, cursive' }}
+              >
+                ← Главная
+              </Button>
+            </div>
             <h2 className="text-4xl md:text-5xl font-bold text-center text-white mb-8" style={{ 
               textShadow: '3px 3px 0 #5a1a5a',
               fontFamily: 'Fredoka, cursive'
@@ -217,6 +226,15 @@ const Index = () => {
 
         {activeTab === 'game' && (
           <div className="space-y-8 animate-fade-in">
+            <div className="flex justify-center mb-4">
+              <Button
+                onClick={() => setActiveTab('home')}
+                className="rounded-full font-bold bg-gradient-to-r from-purple-500 to-pink-500 text-white hover:scale-105 transition-transform px-6 py-3"
+                style={{ fontFamily: 'Fredoka, cursive' }}
+              >
+                ← Главная
+              </Button>
+            </div>
             <h2 className="text-4xl md:text-5xl font-bold text-center text-white mb-8" style={{ 
               textShadow: '3px 3px 0 #5a1a5a',
               fontFamily: 'Fredoka, cursive'
@@ -254,6 +272,15 @@ const Index = () => {
 
         {activeTab === 'gallery' && (
           <div className="space-y-8 animate-fade-in">
+            <div className="flex justify-center mb-4">
+              <Button
+                onClick={() => setActiveTab('home')}
+                className="rounded-full font-bold bg-gradient-to-r from-purple-500 to-pink-500 text-white hover:scale-105 transition-transform px-6 py-3"
+                style={{ fontFamily: 'Fredoka, cursive' }}
+              >
+                ← Главная
+              </Button>
+            </div>
             <h2 className="text-4xl md:text-5xl font-bold text-center text-white mb-8" style={{ 
               textShadow: '3px 3px 0 #5a1a5a',
               fontFamily: 'Fredoka, cursive'
@@ -279,6 +306,15 @@ const Index = () => {
 
         {activeTab === 'news' && (
           <div className="space-y-8 animate-fade-in">
+            <div className="flex justify-center mb-4">
+              <Button
+                onClick={() => setActiveTab('home')}
+                className="rounded-full font-bold bg-gradient-to-r from-purple-500 to-pink-500 text-white hover:scale-105 transition-transform px-6 py-3"
+                style={{ fontFamily: 'Fredoka, cursive' }}
+              >
+                ← Главная
+              </Button>
+            </div>
             <h2 className="text-4xl md:text-5xl font-bold text-center text-white mb-8" style={{ 
               textShadow: '3px 3px 0 #5a1a5a',
               fontFamily: 'Fredoka, cursive'
@@ -307,6 +343,15 @@ const Index = () => {
 
         {activeTab === 'community' && (
           <div className="space-y-8 animate-fade-in">
+            <div className="flex justify-center mb-4">
+              <Button
+                onClick={() => setActiveTab('home')}
+                className="rounded-full font-bold bg-gradient-to-r from-purple-500 to-pink-500 text-white hover:scale-105 transition-transform px-6 py-3"
+                style={{ fontFamily: 'Fredoka, cursive' }}
+              >
+                ← Главная
+              </Button>
+            </div>
             <h2 className="text-4xl md:text-5xl font-bold text-center text-white mb-8" style={{ 
               textShadow: '3px 3px 0 #5a1a5a',
               fontFamily: 'Fredoka, cursive'
