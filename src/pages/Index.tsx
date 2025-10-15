@@ -13,6 +13,18 @@ const Index = () => {
     const saved = localStorage.getItem('unlockedCookies');
     return saved ? JSON.parse(saved) : [];
   });
+  const [selectedCookie, setSelectedCookie] = useState<number | null>(() => {
+    const saved = localStorage.getItem('selectedCookie');
+    return saved ? parseInt(saved, 10) : null;
+  });
+  const [bossHp, setBossHp] = useState(() => {
+    const saved = localStorage.getItem('bossHp');
+    return saved ? parseInt(saved, 10) : 1000;
+  });
+  const [bossDefeated, setBossDefeated] = useState(() => {
+    const saved = localStorage.getItem('bossDefeated');
+    return saved === 'true';
+  });
 
   useEffect(() => {
     localStorage.setItem('cookieScore', score.toString());
@@ -21,6 +33,20 @@ const Index = () => {
   useEffect(() => {
     localStorage.setItem('unlockedCookies', JSON.stringify(unlockedCookies));
   }, [unlockedCookies]);
+
+  useEffect(() => {
+    if (selectedCookie !== null) {
+      localStorage.setItem('selectedCookie', selectedCookie.toString());
+    }
+  }, [selectedCookie]);
+
+  useEffect(() => {
+    localStorage.setItem('bossHp', bossHp.toString());
+  }, [bossHp]);
+
+  useEffect(() => {
+    localStorage.setItem('bossDefeated', bossDefeated.toString());
+  }, [bossDefeated]);
 
   const cookies = [
     { id: 1, name: 'Brave Cookie', rarity: 5, type: 'Воин', power: '🗡️', color: 'from-pink-400 to-purple-500' },
@@ -56,6 +82,31 @@ const Index = () => {
   };
 
   const isCookieUnlocked = (cookieId: number) => unlockedCookies.includes(cookieId);
+
+  const selectCookie = (cookieId: number) => {
+    setSelectedCookie(cookieId);
+  };
+
+  const getDamage = () => {
+    if (selectedCookie === null) return 1;
+    const cookie = cookies.find(c => c.id === selectedCookie);
+    return cookie ? cookie.rarity + 1 : 1;
+  };
+
+  const attackBoss = () => {
+    const damage = getDamage();
+    const newHp = Math.max(0, bossHp - damage);
+    setBossHp(newHp);
+    if (newHp === 0) {
+      setBossDefeated(true);
+      setScore(score + 5000);
+    }
+  };
+
+  const resetBoss = () => {
+    setBossHp(1000);
+    setBossDefeated(false);
+  };
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-pink-300 via-purple-300 to-blue-300">
@@ -124,11 +175,15 @@ const Index = () => {
 
             <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
               {[
-                { icon: '⚔️', title: 'Эпические битвы', desc: 'Сражайся с боссами' },
-                { icon: '🏰', title: 'Строй королевство', desc: 'Создай свой замок' },
-                { icon: '🎁', title: 'Собирай награды', desc: 'Открывай сокровища' },
+                { icon: '⚔️', title: 'Эпические битвы', desc: 'Сражайся с боссами', action: 'boss' },
+                { icon: '🏰', title: 'Строй королевство', desc: 'Создай свой замок', action: null },
+                { icon: '🎁', title: 'Собирай награды', desc: 'Открывай сокровища', action: null },
               ].map((feature, idx) => (
-                <Card key={idx} className="p-6 bg-white/90 backdrop-blur hover:scale-105 transition-transform border-4 border-purple-400 rounded-3xl">
+                <Card 
+                  key={idx} 
+                  className="p-6 bg-white/90 backdrop-blur hover:scale-105 transition-transform border-4 border-purple-400 rounded-3xl cursor-pointer"
+                  onClick={() => feature.action && setActiveTab(feature.action)}
+                >
                   <div className="text-6xl mb-4 text-center">{feature.icon}</div>
                   <h3 className="text-2xl font-bold text-center mb-2 text-purple-700" style={{ fontFamily: 'Fredoka, cursive' }}>
                     {feature.title}
@@ -189,8 +244,16 @@ const Index = () => {
                           <p className="text-gray-700 mb-4 font-semibold" style={{ fontFamily: 'Nunito, sans-serif' }}>
                             Тип: {cookie.type}
                           </p>
-                          <Button className="w-full rounded-full font-bold bg-gradient-to-r from-pink-500 to-purple-600 text-white hover:scale-105 transition-transform" style={{ fontFamily: 'Fredoka, cursive' }}>
-                            Играть
+                          <Button 
+                            onClick={() => selectCookie(cookie.id)}
+                            className={`w-full rounded-full font-bold text-white hover:scale-105 transition-transform ${
+                              selectedCookie === cookie.id 
+                                ? 'bg-gradient-to-r from-green-500 to-emerald-600' 
+                                : 'bg-gradient-to-r from-pink-500 to-purple-600'
+                            }`} 
+                            style={{ fontFamily: 'Fredoka, cursive' }}
+                          >
+                            {selectedCookie === cookie.id ? '✓ Выбран' : 'Выбрать'}
                           </Button>
                         </>
                       ) : (
@@ -338,6 +401,89 @@ const Index = () => {
                 </Card>
               ))}
             </div>
+          </div>
+        )}
+
+        {activeTab === 'boss' && (
+          <div className="space-y-8 animate-fade-in">
+            <div className="flex justify-center mb-4">
+              <Button
+                onClick={() => setActiveTab('home')}
+                className="rounded-full font-bold bg-gradient-to-r from-purple-500 to-pink-500 text-white hover:scale-105 transition-transform px-6 py-3"
+                style={{ fontFamily: 'Fredoka, cursive' }}
+              >
+                ← Главная
+              </Button>
+            </div>
+            <h2 className="text-4xl md:text-5xl font-bold text-center text-white mb-8" style={{ 
+              textShadow: '3px 3px 0 #5a1a5a',
+              fontFamily: 'Fredoka, cursive'
+            }}>
+              ⚔️ Битва с боссом
+            </h2>
+            
+            <Card className="max-w-3xl mx-auto p-8 bg-white/95 backdrop-blur border-4 border-red-500 rounded-3xl">
+              {!bossDefeated ? (
+                <div className="space-y-6">
+                  <div className="text-center">
+                    <h3 className="text-3xl font-bold text-red-700 mb-4" style={{ fontFamily: 'Fredoka, cursive' }}>
+                      Silent Salt Cookie
+                    </h3>
+                    <div className="relative w-full bg-gray-200 h-8 rounded-full overflow-hidden mb-4">
+                      <div 
+                        className="absolute top-0 left-0 h-full bg-gradient-to-r from-red-500 to-orange-500 transition-all duration-300"
+                        style={{ width: `${(bossHp / 1000) * 100}%` }}
+                      />
+                      <div className="absolute inset-0 flex items-center justify-center text-white font-bold" style={{ fontFamily: 'Fredoka, cursive' }}>
+                        {bossHp} / 1000 HP
+                      </div>
+                    </div>
+                  </div>
+
+                  <button
+                    onClick={attackBoss}
+                    className="mx-auto block text-9xl hover:scale-110 active:scale-95 transition-transform cursor-pointer bg-gradient-to-br from-gray-700 via-gray-600 to-gray-800 rounded-3xl p-8 border-4 border-gray-900 shadow-2xl"
+                  >
+                    🗡️
+                  </button>
+
+                  <div className="text-center space-y-3">
+                    <p className="text-xl font-bold text-gray-700" style={{ fontFamily: 'Fredoka, cursive' }}>
+                      Урон за клик: {getDamage()} 💥
+                    </p>
+                    {selectedCookie ? (
+                      <div className="flex items-center justify-center gap-3">
+                        <span className="text-4xl">{cookies.find(c => c.id === selectedCookie)?.power}</span>
+                        <p className="text-lg text-gray-600 font-semibold" style={{ fontFamily: 'Nunito, sans-serif' }}>
+                          {cookies.find(c => c.id === selectedCookie)?.name}
+                        </p>
+                      </div>
+                    ) : (
+                      <p className="text-lg text-gray-500 font-semibold" style={{ fontFamily: 'Nunito, sans-serif' }}>
+                        Выбери персонажа для увеличения урона!
+                      </p>
+                    )}
+                  </div>
+                </div>
+              ) : (
+                <div className="text-center space-y-6">
+                  <div className="text-8xl mb-4">🏆</div>
+                  <h3 className="text-4xl font-bold text-green-700 mb-4" style={{ fontFamily: 'Fredoka, cursive' }}>
+                    Победа!
+                  </h3>
+                  <p className="text-2xl text-gray-700 font-semibold mb-6" style={{ fontFamily: 'Nunito, sans-serif' }}>
+                    Ты получил 5000 🍪!
+                  </p>
+                  <Button
+                    onClick={resetBoss}
+                    className="text-xl px-8 py-6 rounded-full font-bold bg-gradient-to-r from-pink-500 to-purple-600 text-white hover:scale-110 transition-transform"
+                    style={{ fontFamily: 'Fredoka, cursive' }}
+                  >
+                    Сразиться снова
+                  </Button>
+                </div>
+              )}
+            </Card>
           </div>
         )}
 
