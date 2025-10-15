@@ -445,7 +445,7 @@ const Index = () => {
                     className="mx-auto block hover:scale-110 active:scale-95 transition-transform cursor-pointer"
                   >
                     <img 
-                      src="https://cdn.poehali.dev/files/655305c6-b74d-4bc4-a84f-9bfa11e979ce.jpg" 
+                      src="https://cdn.poehali.dev/files/d8904817-1234-469b-b67b-860caab038c5.png" 
                       alt="Silent Salt Cookie"
                       className="w-80 h-80 object-contain drop-shadow-2xl"
                     />
