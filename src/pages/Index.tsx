@@ -17,7 +17,10 @@ const Index = () => {
     const saved = localStorage.getItem('cookieScore');
     return saved ? parseInt(saved, 10) : 0;
   });
-  const [activeTab, setActiveTab] = useState('home');
+  const [activeTab, setActiveTab] = useState(() => {
+    const saved = localStorage.getItem('activeTab');
+    return saved || 'home';
+  });
   const [unlockedCookies, setUnlockedCookies] = useState<number[]>(() => {
     const saved = localStorage.getItem('unlockedCookies');
     return saved ? JSON.parse(saved) : [];
@@ -72,6 +75,21 @@ const Index = () => {
   useEffect(() => {
     localStorage.setItem('playerHp', playerHp.toString());
   }, [playerHp]);
+
+  useEffect(() => {
+    localStorage.setItem('activeTab', activeTab);
+  }, [activeTab]);
+
+  useEffect(() => {
+    const saved = localStorage.getItem('playerDefeated');
+    if (saved === 'true') {
+      setPlayerDefeated(true);
+    }
+  }, []);
+
+  useEffect(() => {
+    localStorage.setItem('playerDefeated', playerDefeated.toString());
+  }, [playerDefeated]);
 
   useEffect(() => {
     if (activeTab === 'boss' && !bossDefeated && !playerDefeated) {
