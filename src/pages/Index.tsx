@@ -149,18 +149,19 @@ const Index = () => {
   };
 
   useEffect(() => {
-    if (activeTab === 'boss') {
-      if (playerDefeated || bossDefeated) {
-        return;
-      }
+    if (activeTab === 'boss' && !playerDefeated && !bossDefeated) {
       const maxHp = getMaxHp();
       if (playerHp > maxHp) {
         setPlayerHp(maxHp);
-      } else if (playerHp === 0) {
-        setPlayerDefeated(true);
       }
     }
-  }, [activeTab, playerHp, playerDefeated, bossDefeated]);
+  }, [activeTab, selectedCookie]);
+
+  useEffect(() => {
+    if (playerHp === 0 && !playerDefeated) {
+      setPlayerDefeated(true);
+    }
+  }, [playerHp]);
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-pink-300 via-purple-300 to-blue-300">
