@@ -81,17 +81,6 @@ const Index = () => {
   }, [activeTab]);
 
   useEffect(() => {
-    const saved = localStorage.getItem('playerDefeated');
-    if (saved === 'true') {
-      setPlayerDefeated(true);
-    }
-  }, []);
-
-  useEffect(() => {
-    localStorage.setItem('playerDefeated', playerDefeated.toString());
-  }, [playerDefeated]);
-
-  useEffect(() => {
     if (activeTab === 'boss' && !bossDefeated && !playerDefeated) {
       const interval = setInterval(() => {
         setPlayerHp(prev => {
@@ -158,6 +147,20 @@ const Index = () => {
     setPlayerHp(getMaxHp());
     setPlayerDefeated(false);
   };
+
+  useEffect(() => {
+    if (activeTab === 'boss') {
+      if (playerDefeated || bossDefeated) {
+        return;
+      }
+      const maxHp = getMaxHp();
+      if (playerHp > maxHp) {
+        setPlayerHp(maxHp);
+      } else if (playerHp === 0) {
+        setPlayerDefeated(true);
+      }
+    }
+  }, [activeTab, playerHp, playerDefeated, bossDefeated]);
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-pink-300 via-purple-300 to-blue-300">
