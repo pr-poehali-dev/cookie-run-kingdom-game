@@ -137,7 +137,7 @@ const Index = () => {
     setBossHp(newHp);
     if (newHp === 0) {
       setBossDefeated(true);
-      setScore(score + 5000);
+      setScore(score + 2500);
     }
   };
 
