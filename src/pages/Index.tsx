@@ -4,6 +4,15 @@ import { Card } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 
 const Index = () => {
+  const cookies = [
+    { id: 1, name: 'Brave Cookie', rarity: 5, type: 'Воин', power: '🗡️', color: 'from-pink-400 to-purple-500' },
+    { id: 2, name: 'Magic Cookie', rarity: 4, type: 'Маг', power: '✨', color: 'from-blue-400 to-cyan-500' },
+    { id: 3, name: 'Healer Cookie', rarity: 4, type: 'Целитель', power: '💖', color: 'from-green-400 to-emerald-500' },
+    { id: 4, name: 'Speed Cookie', rarity: 3, type: 'Разведчик', power: '⚡', color: 'from-yellow-400 to-orange-500' },
+    { id: 5, name: 'Tank Cookie', rarity: 5, type: 'Защитник', power: '🛡️', color: 'from-red-400 to-pink-500' },
+    { id: 6, name: 'Ranger Cookie', rarity: 3, type: 'Лучник', power: '🏹', color: 'from-purple-400 to-pink-500' },
+  ];
+
   const [score, setScore] = useState(() => {
     const saved = localStorage.getItem('cookieScore');
     return saved ? parseInt(saved, 10) : 0;
@@ -25,18 +34,18 @@ const Index = () => {
     const saved = localStorage.getItem('bossDefeated');
     return saved === 'true';
   });
-  const [playerHp, setPlayerHp] = useState(() => {
-    const saved = localStorage.getItem('playerHp');
-    const maxHp = getMaxHp();
-    return saved ? Math.min(parseInt(saved, 10), maxHp) : maxHp;
-  });
-  const [playerDefeated, setPlayerDefeated] = useState(false);
 
-  function getMaxHp() {
+  const getMaxHp = () => {
     if (selectedCookie === null) return 50;
     const cookie = cookies.find(c => c.id === selectedCookie);
     return cookie ? 50 + (cookie.rarity * 10) : 50;
-  }
+  };
+
+  const [playerHp, setPlayerHp] = useState(() => {
+    const saved = localStorage.getItem('playerHp');
+    return saved ? parseInt(saved, 10) : 50;
+  });
+  const [playerDefeated, setPlayerDefeated] = useState(false);
 
   useEffect(() => {
     localStorage.setItem('cookieScore', score.toString());
@@ -78,15 +87,6 @@ const Index = () => {
       return () => clearInterval(interval);
     }
   }, [activeTab, bossDefeated, playerDefeated]);
-
-  const cookies = [
-    { id: 1, name: 'Brave Cookie', rarity: 5, type: 'Воин', power: '🗡️', color: 'from-pink-400 to-purple-500' },
-    { id: 2, name: 'Magic Cookie', rarity: 4, type: 'Маг', power: '✨', color: 'from-blue-400 to-cyan-500' },
-    { id: 3, name: 'Healer Cookie', rarity: 4, type: 'Целитель', power: '💖', color: 'from-green-400 to-emerald-500' },
-    { id: 4, name: 'Speed Cookie', rarity: 3, type: 'Разведчик', power: '⚡', color: 'from-yellow-400 to-orange-500' },
-    { id: 5, name: 'Tank Cookie', rarity: 5, type: 'Защитник', power: '🛡️', color: 'from-red-400 to-pink-500' },
-    { id: 6, name: 'Ranger Cookie', rarity: 3, type: 'Лучник', power: '🏹', color: 'from-purple-400 to-pink-500' },
-  ];
 
   const news = [
     { id: 1, title: 'Новое обновление 3.0!', date: '15 Октября 2025', emoji: '🎉' },
