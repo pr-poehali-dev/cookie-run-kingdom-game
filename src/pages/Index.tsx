@@ -51,34 +51,28 @@ const Index = () => {
   const [playerDefeated, setPlayerDefeated] = useState(false);
 
   useEffect(() => {
-    localStorage.setItem('cookieScore', score.toString());
-  }, [score]);
-
-  useEffect(() => {
-    localStorage.setItem('unlockedCookies', JSON.stringify(unlockedCookies));
-  }, [unlockedCookies]);
-
-  useEffect(() => {
-    if (selectedCookie !== null) {
-      localStorage.setItem('selectedCookie', selectedCookie.toString());
-    }
-  }, [selectedCookie]);
-
-  useEffect(() => {
-    localStorage.setItem('bossHp', bossHp.toString());
-  }, [bossHp]);
-
-  useEffect(() => {
-    localStorage.setItem('bossDefeated', bossDefeated.toString());
-  }, [bossDefeated]);
-
-  useEffect(() => {
-    localStorage.setItem('playerHp', playerHp.toString());
-  }, [playerHp]);
-
-  useEffect(() => {
-    localStorage.setItem('activeTab', activeTab);
-  }, [activeTab]);
+    const gameState = {
+      cookieScore: score,
+      unlockedCookies: unlockedCookies,
+      selectedCookie: selectedCookie,
+      bossHp: bossHp,
+      bossDefeated: bossDefeated,
+      playerHp: playerHp,
+      activeTab: activeTab
+    };
+    const timeoutId = setTimeout(() => {
+      localStorage.setItem('cookieScore', score.toString());
+      localStorage.setItem('unlockedCookies', JSON.stringify(unlockedCookies));
+      if (selectedCookie !== null) {
+        localStorage.setItem('selectedCookie', selectedCookie.toString());
+      }
+      localStorage.setItem('bossHp', bossHp.toString());
+      localStorage.setItem('bossDefeated', bossDefeated.toString());
+      localStorage.setItem('playerHp', playerHp.toString());
+      localStorage.setItem('activeTab', activeTab);
+    }, 300);
+    return () => clearTimeout(timeoutId);
+  }, [score, unlockedCookies, selectedCookie, bossHp, bossDefeated, playerHp, activeTab]);
 
   useEffect(() => {
     if (activeTab === 'boss' && !bossDefeated && !playerDefeated) {
