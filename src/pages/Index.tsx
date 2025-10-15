@@ -563,7 +563,7 @@ const Index = () => {
                     Победа!
                   </h3>
                   <p className="text-2xl text-gray-700 font-semibold mb-6" style={{ fontFamily: 'Nunito, sans-serif' }}>
-                    Ты получил 5000 🍪!
+                    Ты получил 2500 🍪!
                   </p>
                   <Button
                     onClick={resetBoss}
