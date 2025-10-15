@@ -165,7 +165,7 @@ const Index = () => {
             textShadow: '3px 3px 0 #5a1a5a, -1px -1px 0 #5a1a5a, 1px -1px 0 #5a1a5a, -1px 1px 0 #5a1a5a',
             fontFamily: 'Fredoka, cursive'
           }}>
-            🍪 COOKIE KINGDOM
+            🍪 COOKIE RUN: CLICKER
           </h1>
           <div className="hidden md:flex gap-2">
             {['home', 'characters', 'game', 'gallery', 'news', 'community'].map((tab) => (
