@@ -25,6 +25,18 @@ const Index = () => {
     const saved = localStorage.getItem('bossDefeated');
     return saved === 'true';
   });
+  const [playerHp, setPlayerHp] = useState(() => {
+    const saved = localStorage.getItem('playerHp');
+    const maxHp = getMaxHp();
+    return saved ? Math.min(parseInt(saved, 10), maxHp) : maxHp;
+  });
+  const [playerDefeated, setPlayerDefeated] = useState(false);
+
+  function getMaxHp() {
+    if (selectedCookie === null) return 50;
+    const cookie = cookies.find(c => c.id === selectedCookie);
+    return cookie ? 50 + (cookie.rarity * 10) : 50;
+  }
 
   useEffect(() => {
     localStorage.setItem('cookieScore', score.toString());
@@ -47,6 +59,25 @@ const Index = () => {
   useEffect(() => {
     localStorage.setItem('bossDefeated', bossDefeated.toString());
   }, [bossDefeated]);
+
+  useEffect(() => {
+    localStorage.setItem('playerHp', playerHp.toString());
+  }, [playerHp]);
+
+  useEffect(() => {
+    if (activeTab === 'boss' && !bossDefeated && !playerDefeated) {
+      const interval = setInterval(() => {
+        setPlayerHp(prev => {
+          const newHp = Math.max(0, prev - 5);
+          if (newHp === 0) {
+            setPlayerDefeated(true);
+          }
+          return newHp;
+        });
+      }, 5000);
+      return () => clearInterval(interval);
+    }
+  }, [activeTab, bossDefeated, playerDefeated]);
 
   const cookies = [
     { id: 1, name: 'Brave Cookie', rarity: 5, type: 'Воин', power: '🗡️', color: 'from-pink-400 to-purple-500' },
@@ -106,6 +137,8 @@ const Index = () => {
   const resetBoss = () => {
     setBossHp(1000);
     setBossDefeated(false);
+    setPlayerHp(getMaxHp());
+    setPlayerDefeated(false);
   };
 
   return (
@@ -423,19 +456,52 @@ const Index = () => {
             </h2>
             
             <Card className="max-w-3xl mx-auto p-8 bg-white/95 backdrop-blur border-4 border-red-500 rounded-3xl">
-              {!bossDefeated ? (
+              {playerDefeated ? (
+                <div className="text-center space-y-6">
+                  <div className="text-8xl mb-4">💀</div>
+                  <h3 className="text-4xl font-bold text-red-700 mb-4" style={{ fontFamily: 'Fredoka, cursive' }}>
+                    Поражение!
+                  </h3>
+                  <p className="text-2xl text-gray-700 font-semibold mb-6" style={{ fontFamily: 'Nunito, sans-serif' }}>
+                    Босс оказался сильнее...
+                  </p>
+                  <Button
+                    onClick={resetBoss}
+                    className="text-xl px-8 py-6 rounded-full font-bold bg-gradient-to-r from-pink-500 to-purple-600 text-white hover:scale-110 transition-transform"
+                    style={{ fontFamily: 'Fredoka, cursive' }}
+                  >
+                    Попробовать снова
+                  </Button>
+                </div>
+              ) : !bossDefeated ? (
                 <div className="space-y-6">
-                  <div className="text-center">
-                    <h3 className="text-3xl font-bold text-red-700 mb-4" style={{ fontFamily: 'Fredoka, cursive' }}>
-                      Silent Salt Cookie
-                    </h3>
-                    <div className="relative w-full bg-gray-200 h-8 rounded-full overflow-hidden mb-4">
-                      <div 
-                        className="absolute top-0 left-0 h-full bg-gradient-to-r from-red-500 to-orange-500 transition-all duration-300"
-                        style={{ width: `${(bossHp / 1000) * 100}%` }}
-                      />
-                      <div className="absolute inset-0 flex items-center justify-center text-white font-bold" style={{ fontFamily: 'Fredoka, cursive' }}>
-                        {bossHp} / 1000 HP
+                  <div className="text-center space-y-4">
+                    <div>
+                      <h3 className="text-3xl font-bold text-red-700 mb-2" style={{ fontFamily: 'Fredoka, cursive' }}>
+                        Silent Salt Cookie
+                      </h3>
+                      <div className="relative w-full bg-gray-200 h-8 rounded-full overflow-hidden">
+                        <div 
+                          className="absolute top-0 left-0 h-full bg-gradient-to-r from-red-500 to-orange-500 transition-all duration-300"
+                          style={{ width: `${(bossHp / 1000) * 100}%` }}
+                        />
+                        <div className="absolute inset-0 flex items-center justify-center text-white font-bold" style={{ fontFamily: 'Fredoka, cursive' }}>
+                          {bossHp} / 1000 HP
+                        </div>
+                      </div>
+                    </div>
+                    <div>
+                      <h3 className="text-2xl font-bold text-blue-700 mb-2" style={{ fontFamily: 'Fredoka, cursive' }}>
+                        {selectedCookie ? cookies.find(c => c.id === selectedCookie)?.name : 'Твоё HP'}
+                      </h3>
+                      <div className="relative w-full bg-gray-200 h-8 rounded-full overflow-hidden">
+                        <div 
+                          className="absolute top-0 left-0 h-full bg-gradient-to-r from-green-500 to-emerald-500 transition-all duration-300"
+                          style={{ width: `${(playerHp / getMaxHp()) * 100}%` }}
+                        />
+                        <div className="absolute inset-0 flex items-center justify-center text-white font-bold" style={{ fontFamily: 'Fredoka, cursive' }}>
+                          {playerHp} / {getMaxHp()} HP
+                        </div>
                       </div>
                     </div>
                   </div>
